@@ -1,0 +1,7 @@
+{
+  "hex": "100002aabb100001cc",
+  "steps": [{"op": "slice", "from": 0, "to": 8}],
+  "width": 4,
+  "bad_field": 1,
+  "field_invariant": true
+}
