@@ -3,9 +3,25 @@
 <head><meta charset="utf-8"><title>packetlens</title></head>
 <body>
 <h1>packetlens</h1>
-<p>打开本页后由 app.js 渲染十六进制视图与字段树（真实 DOM）。</p>
+<p>浏览器内十六进制解析台：slice 视口 + 字段定位（数据为内置样例 packet）。</p>
 <pre id="out"></pre>
+<script src="codec.js"></script>
+<script src="fieldparse.js"></script>
 <script src="app.js"></script>
-<script>document.getElementById("out").textContent = "见 node check_sample.js 的验收输出";</script>
+<script>
+(function () {
+  var spec = { hex: "100002aabb100001cc", steps: [{ op: "slice", from: 0, to: 8 }], width: 4 };
+  var payload = spec.hex.match(/../g).map(function (h) { return parseInt(h, 16); });
+  var view = window.app.renderView(payload, { steps: spec.steps, width: spec.width });
+  var lines = view.rows.map(function (r) {
+    return r.offset.toString(16).padStart(4, "0") + "  " + r.bytes.join(" ");
+  });
+  lines.push("字段: " + view.fields.map(function (f) {
+    return "tag=0x" + f.tag.toString(16) + " [" + f.from + "," + f.to + ")";
+  }).join("  "));
+  lines.push("映射: " + JSON.stringify(view.map));
+  document.getElementById("out").textContent = lines.join("\n");
+})();
+</script>
 </body>
 </html>
